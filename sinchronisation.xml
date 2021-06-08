@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_1.dtd'><nta><declaration>
+// Shut down request
+chan shut_down;
+int amount=0;</declaration><template><name x="5" y="5">INT</name><location id="id0" x="-56" y="-280"></location><location id="id1" x="-232" y="-280"></location><init ref="id1"/><transition><source ref="id1"/><target ref="id0"/><label kind="synchronisation" x="-176" y="-272">shut_down?</label></transition></template><template><name>env</name><location id="id2" x="-32" y="-88"></location><location id="id3" x="-168" y="-72"><name x="-152" y="-80">OFF</name></location><location id="id4" x="-384" y="-64"></location><init ref="id4"/><transition><source ref="id3"/><target ref="id2"/><label kind="guard" x="-144" y="-104">amount&gt;1</label><label kind="synchronisation" x="-152" y="-128">shut_down!</label></transition><transition><source ref="id3"/><target ref="id4"/><label kind="assignment" x="-336" y="-208">amount++</label><nail x="-256" y="-192"/><nail x="-360" y="-184"/></transition><transition><source ref="id4"/><target ref="id3"/></transition></template><system>system INT,env;
+
+// Use this system line to specify process priorities:
+//system C,env &lt; INT;
+</system></nta>
