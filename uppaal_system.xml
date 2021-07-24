@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+int[0,1] turn_on ;
+int[0,1] platoon;
+chan platoon_end;
+chan join_request;
+chan leave;
+chan request_accepted;
+chan request_rejected;
+const int max_v = 4;
+chan send;
+clock t;
+int num_v = 0;// number of vehilce in platoon </declaration>
+	<template>
+		<name x="5" y="5">follower</name>
+		<parameter>int[0,1] &amp;turn_on</parameter>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id0" x="-323" y="-238">
+			<name x="-374" y="-255">start</name>
+		</location>
+		<location id="id1" x="-136" y="-306">
+			<name x="-136" y="-340">manual_driving</name>
+		</location>
+		<location id="id2" x="-136" y="-153">
+		</location>
+		<location id="id3" x="-187" y="-85">
+			<name x="-213" y="-76">listen</name>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-119" y="-263">platoon == 1</label>
+			<nail x="-59" y="-272"/>
+			<nail x="-59" y="-204"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-305" y="-76">send?</label>
+			<label kind="assignment" x="-306" y="-93">t:=0</label>
+			<nail x="-323" y="-34"/>
+			<nail x="-306" y="-161"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="59" y="-204">platoon_end?</label>
+			<nail x="25" y="-9"/>
+			<nail x="102" y="-187"/>
+			<nail x="34" y="-331"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-17" y="-144">leave!</label>
+			<label kind="assignment" x="-42" y="-127">num_v:=num_v-1</label>
+			<nail x="17" y="-110"/>
+			<nail x="25" y="-306"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-221" y="-136">request_accepted?</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-178" y="-238">request_rejected?</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-280" y="-238">platoon_end?</label>
+			<nail x="-229" y="-187"/>
+			<nail x="-229" y="-255"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-263" y="-374">turn_on := 0</label>
+			<nail x="-161" y="-340"/>
+			<nail x="-161" y="-340"/>
+			<nail x="-297" y="-340"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="-272" y="-297">turn_on :=1</label>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">leading</name>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id4" x="-756" y="-586">
+			<name x="-807" y="-603">start</name>
+		</location>
+		<location id="id5" x="-552" y="-586">
+			<name x="-535" y="-603">manual_driving</name>
+		</location>
+		<location id="id6" x="-552" y="-425">
+			<name x="-603" y="-459">Platoon_Mode</name>
+		</location>
+		<location id="id7" x="-748" y="-382">
+			<name x="-824" y="-382">accepted</name>
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="guard" x="-518" y="-322">t &gt;=2</label>
+			<label kind="synchronisation" x="-602" y="-326">send!</label>
+			<nail x="-510" y="-271"/>
+			<nail x="-620" y="-348"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<nail x="-697" y="-459"/>
+			<nail x="-697" y="-459"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-468" y="-348">request_rejected!</label>
+			<nail x="-357" y="-348"/>
+			<nail x="-485" y="-348"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="guard" x="-722" y="-399">num_v &lt; max_v</label>
+			<label kind="synchronisation" x="-714" y="-416">request_accepted!</label>
+			<label kind="assignment" x="-731" y="-382">num_v:= num_v+1</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="-458" y="-519">platoon_end!</label>
+			<label kind="assignment" x="-458" y="-562">platoon:=0, num_v:=0</label>
+			<nail x="-459" y="-451"/>
+			<nail x="-459" y="-561"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id6"/>
+			<label kind="assignment" x="-620" y="-493">platoon:=1</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="assignment" x="-697" y="-654">turn_on :=0</label>
+			<nail x="-577" y="-628"/>
+			<nail x="-730" y="-628"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="assignment" x="-695" y="-543">turn_on :=1</label>
+			<nail x="-713" y="-543"/>
+			<nail x="-713" y="-543"/>
+			<nail x="-603" y="-543"/>
+			<nail x="-603" y="-543"/>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+v1 = follower(turn_on );
+v2 = follower(turn_on );
+
+vleading = leading();
+// List one or more processes to be composed into a system.
+system v1,vleading;  </system>
+	<queries>
+		<query>
+			<formula>E&lt;&gt; v1.listen</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] num_v &lt;= max_v</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; v1.listen and not vleading.manual_driving and not vleading.start</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[]  not deadlock</formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>
